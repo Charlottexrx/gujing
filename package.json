@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "db:generate": "drizzle-kit generate",
+    "test:failure-preview": "python3 tests/failure_preview.py"
+  },
+  "type": "module",
+  "devDependencies": {
+    "drizzle-kit": "0.31.4",
+    "drizzle-orm": "0.44.5",
+    "esbuild": "0.25.10",
+    "wrangler": "4.50.0",
+    "jsdom": "26.1.0"
+  }
+}

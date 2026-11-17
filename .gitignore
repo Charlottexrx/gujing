@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+node_modules/
+.wrangler/
+.dev.vars
+.sites-runtime/
+dist/server/
+dist/.openai/
+
+.site-public/

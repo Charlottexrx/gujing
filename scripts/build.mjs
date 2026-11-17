@@ -1,0 +1,11 @@
+import {execFileSync} from 'node:child_process';
+import { build } from 'esbuild';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
+execFileSync(process.execPath,['scripts/export_public_source.mjs'],{stdio:'inherit'});
+const publicSource=JSON.parse(await readFile('.site-public/public-assets.json','utf8'));
+const files=['index.html','styles.css','app.mjs','logic.mjs','research.mjs','monitor-ui.mjs','market-data.json','ifind-notices.json'];
+const assets=Object.fromEntries(await Promise.all(files.map(async f=>['/'+f,await readFile('dist/'+f,'utf8')])));
+await mkdir('dist/server',{recursive:true}); await mkdir('dist/.openai',{recursive:true});
+await build({entryPoints:['worker/index.mjs'],outfile:'dist/server/index.js',bundle:true,format:'esm',platform:'browser',target:'es2022',define:{__ASSETS__:JSON.stringify(assets),__PUBLIC_SOURCE__:JSON.stringify(publicSource)}});
+await writeFile('dist/.openai/hosting.json',await readFile('.openai/hosting.json'));
+console.log('Built server and embedded assets.');

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4f7f5">
+<title>股镜 · 自然语言选股</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>股镜<small>选股工作台</small></span></a>
+  <nav aria-label="工作台">
+    <a class="nav-on" href="#top"><span class="nav-icon" aria-hidden="true">⌕</span>选股</a>
+    <a href="#results"><span class="nav-icon" aria-hidden="true">▤</span>筛选结果</a>
+    <a href="#monitoring"><span class="nav-icon" aria-hidden="true">◷</span>监控任务</a>
+    <a href="#portfolio"><span class="nav-icon" aria-hidden="true">◉</span>组合模拟</a>
+  </nav>
+  <div class="sidebar-foot"><span class="status-dot"></span><span>扶摇金融数据<small id="side-date">正在加载数据</small></span></div>
+</aside>
+<main>
+  <header class="topline" id="top"><span>研究工作台 <b>›</b> 自然语言选股</span><span id="sample-label" class="badge">沪深 300 样本</span></header>
+  <section class="intro" aria-labelledby="title">
+    <h1 id="title">你想找什么样的股票？</h1>
+    <p>用一句话描述想法，查看它对应的筛选条件和数据。</p>
+  </section>
+  <div id="information-guide" class="information-guide" aria-label="怎样读这些结果"><p><strong>数据事实</strong>：带来源和日期的历史数值，计算值会说明口径。</p><p><strong>推断 / 假设</strong>：对你意思的解释、默认条件和组合情境，需要你确认；不代表未来涨跌。</p><p><strong>不确定信息</strong>：缺失、过期或取数失败会标为“待核验”，不能当成符合条件。</p></div>
+  <section class="card input-card" aria-label="描述选股想法">
+    <label for="intent" class="sr-only">输入选股想法</label>
+    <textarea id="intent" rows="3" spellcheck="false" placeholder="例如：想找最近一个月整体上涨、每天涨跌幅度小一点的股票。">想找利润比去年同期高、股价不超过每股盈利的25倍，而且近20个开市日股价每天的起伏低于2%的股票。</textarea>
+    <div class="guide">
+      <p>你可以从这几个方面描述，挑你在意的就行。</p>
+      <div class="guide-grid">
+        <div><strong>最近涨了多少</strong><small>股价在一段时间内涨跌了多少（区间涨跌幅）</small></div>
+        <div><strong>每天涨跌大不大</strong><small>日常涨跌幅度有多大（波动率）</small></div>
+        <div><strong>公司赚得更多了吗</strong><small>和去年同一时期相比（净利润同比增长）</small></div>
+        <div><strong>估值贵不贵</strong><small>股价是每股盈利的多少倍（市盈率）</small></div>
+        <div><strong>你关注哪类公司</strong><small>例如白酒、银行、电池（行业或板块）</small></div>
+      </div>
+    </div>
+    <p id="ai-status" class="data-date" role="status">正在检查AI连接；筛选数字始终由程序计算。</p><label for="parse-engine">理解方式</label> <select id="parse-engine"><option value="rules">规则解析（免费）</option><option value="ai">AI理解 · gpt-5.4-mini</option></select><div class="card-actions"><button class="button quiet" id="use-example" type="button">填入示例</button><button class="button primary" id="generate" type="button">生成筛选条件 <span aria-hidden="true">→</span></button></div>
+  </section>
+  <div id="compliance-notice" class="notice error" role="alert" hidden></div>
+  <div id="data-notice" class="notice" hidden role="alert"></div>
+  <div id="freshness-notice" class="notice" role="status" hidden></div>
+  <details class="card coverage-card"><summary id="coverage-summary">公告覆盖正在核验</summary><div id="coverage-body"></div></details>
+  <div id="ifind-notice" class="notice" hidden role="alert"></div>
+  <section class="stage" id="conditions" aria-labelledby="conditions-title">
+    <header class="section-head"><div><h2 id="conditions-title">筛选条件</h2><p>看看这里是不是你想要的。看哪一项、看多久、填多少，都可以改。</p></div><button class="button outline" id="load-saved" type="button" disabled>打开已保存条件</button></header>
+    <div class="card rules-card">
+      <div id="parse-notice" class="notice" role="status" hidden></div>
+      <div id="rules"></div>
+      <div id="live-impact" class="live-impact" role="status" aria-live="polite" hidden></div>
+      <div id="share-link-box" hidden><label for="share-link">分享条件链接（不含持仓或密钥）</label><input id="share-link" readonly><p class="data-date">链接只带条件，不带结果数字；打开后重新计算。公开页面可直接打开；只分享条件，不分享你的模拟盘和监控记录。</p></div>
+      <div id="rule-error" class="notice error" role="alert" hidden></div>
+      <div class="card-actions split"><button class="button quiet" id="add-rule" type="button">＋ 添加条件</button><div><button class="button quiet" id="share-screen" type="button" disabled>分享条件链接</button><button class="button outline" id="save-rules" type="button">保存条件</button><button class="button primary" id="run" type="button" disabled>开始筛选 <span aria-hidden="true">→</span></button></div></div>
+    </div>
+  </section>
+  <section class="stage" id="results" aria-labelledby="results-title">
+    <header class="section-head"><div><h2 id="results-title">筛选结果</h2><p id="result-description">生成条件后查看筛选结果。</p><p id="sample-sectors" class="sample-sectors"></p></div><div class="row-actions"><button class="button primary" id="save-monitor" type="button" disabled>存成监控任务</button><button class="button outline" id="open-compare" type="button" disabled>拿我关注的股票来比</button></div></header>
+    <div class="card result-card">
+      <div id="changes" class="changes" role="status" hidden></div>
+      <div class="tabs" id="result-tabs" aria-label="结果状态"></div>
+      <div id="result-table" class="table-scroll"></div>
+    </div>
+  </section>
+  <section class="stage" id="portfolio" aria-labelledby="portfolio-title">
+    <header class="section-head"><div><h2 id="portfolio-title">组合模拟</h2><p>加入关注的股票，看看组合集中在哪些行业，以及怎样分散。</p></div></header>
+    <div class="card portfolio-card">
+      <div class="picker-row"><label for="portfolio-stock" class="sr-only">选择股票加入组合</label><select id="portfolio-stock"></select><button class="button outline" id="add-holding" type="button" disabled>＋ 加入组合</button></div>
+      <div id="portfolio-body"></div><details class="paper-card"><summary>模拟盘 · 用当前组合试算资金分配</summary><p class="data-date">按页面标明日期的历史快照模拟，不是实时交易。使用模拟资金，记录仅保存在本浏览器。</p><label>模拟资金（元）<input id="paper-capital" type="number" min="1000" max="10000000" value="100000"></label><button id="paper-open" class="button outline" type="button">用当前组合建立模拟盘</button><button id="paper-reset" class="button quiet" type="button">重置模拟盘</button><div id="paper-result" aria-live="polite"></div></details>
+    </div>
+  </section>
+  <section class="stage" id="monitoring" aria-labelledby="monitor-title">
+    <header class="section-head"><div><h2 id="monitor-title">监控任务 <span id="monitor-count" class="badge">0 个任务</span></h2><p>保存一份名单，持续查看条件变化、日常涨跌幅度和公告。</p></div><button id="monitor-refresh" class="button outline">刷新状态</button></header>
+    <div class="card monitor-card"><p class="monitor-note">任务保存在服务器，按访客会话隔离。可设置北京时间计划并立即复查。公开版后台调度需独立授权，未验证自动执行前不会声称已自动检查。节假日按交易日历检查最近一个收盘日。公告为语义检索，可能不完整。</p><div id="monitor-message" class="notice error" role="alert" hidden></div><div id="monitor-tasks"><div class="empty">正在读取监控任务…</div></div></div>
+  </section>
+  <footer><p><a href="/source/" target="_blank">公开源码仓库与 README ↗</a></p><span>行情、财务和行业来自扶摇。<span id="ifind-status">公告来自 iFinD。</span>组合结果均为历史情境模拟。</span><a href="https://fuyao.aicubes.cn/docs/" target="_blank" rel="noreferrer">数据接口说明 ↗</a></footer>
+</main>
+</div>
+<dialog id="detail-dialog"><div id="detail-content"></div></dialog>
+<dialog id="compare-dialog"><div id="compare-content"></div></dialog>
+<dialog id="monitor-dialog"><form id="monitor-form" class="monitor-form"><div class="monitor-top"><h2 id="monitor-form-title">存成监控任务</h2><button type="button" id="monitor-close" class="button quiet" aria-label="关闭">×</button></div>
+<label>任务名称<input id="monitor-name" required maxlength="60"></label><p id="monitor-scope"></p><p id="monitor-form-rules" class="monitor-note"></p>
+<label>几点检查（北京时间）<select id="monitor-time"><option>15:30</option><option>16:30</option><option>17:30</option><option>18:30</option></select></label>
+<fieldset><legend>每周哪几天</legend><div class="monitor-days"><label><input type="checkbox" name="monitor-day" value="1" checked>周一</label><label><input type="checkbox" name="monitor-day" value="2" checked>周二</label><label><input type="checkbox" name="monitor-day" value="3" checked>周三</label><label><input type="checkbox" name="monitor-day" value="4" checked>周四</label><label><input type="checkbox" name="monitor-day" value="5" checked>周五</label></div></fieldset>
+<div class="monitor-options"><label>看多少个开市日的日常起伏<input id="monitor-vol-days" type="number" min="2" max="120" value="20" required></label><label>比上次增加超过多少就提醒（%）<input id="monitor-vol-rise" type="number" min="10" max="500" step="any" value="50" required></label></div>
+<label class="check-label"><input type="checkbox" id="monitor-notices" checked> 同时检查是否有新公告（iFinD）</label><p class="monitor-note">例如从 1% 增加到超过 1.5%，就是增加超过 50%。这只是历史变化提醒，不代表未来涨跌或买卖建议。首次检索到当天公告也会提醒，公告日期未精确到发布时刻。</p>
+<div id="monitor-form-error" class="notice error" role="alert" hidden></div><button type="submit" id="monitor-submit" class="button primary">保存监控任务</button></form></dialog>
+<div id="toast" role="status" hidden></div>
+<script type="module" src="./app.mjs"></script>
+</body>
+</html>

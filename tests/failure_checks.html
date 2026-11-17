@@ -1,0 +1,61 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>接口失败页面测试</title>
+<style>body{font:15px system-ui;color:#143d2c;background:#f4f8f5;margin:28px}li{margin:12px 0;padding:10px;background:white;border:1px solid #c7dece}iframe{width:900px;height:180px;border:1px solid #d7e4da}h1{font-size:24px}a{color:#116249}</style>
+<h1>接口失败页面测试</h1><p>通过本地快照请求模拟上游不可用。每个用例运行网站原有脚本，核对实际 DOM 提示、结果和按钮状态。</p>
+<p id="overall" role="status">正在测试 6 种情况……</p><ol id="reports"></ol><div id="frames"></div>
+<script type="module">
+const sources={fuyao:'扶摇',ifind:'iFinD'};
+const kinds={timeout:'超时',error:'返回报错',empty:'返回空数据'};
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function check(source,kind){
+ const frame=document.createElement('iframe');
+ const url='/__fail__/'+source+'/'+kind+'/';
+ frame.src=url;
+ frame.title=sources[source]+' '+kinds[kind];
+ document.querySelector('#frames').append(frame);
+ let doc;
+ for(let i=0;i<160;i++){
+  doc=frame.contentDocument;
+  const message=doc?.getElementById(source==='fuyao'?'data-notice':'ifind-notice');
+  if(message&&!message.hidden)break;
+  await delay(100);
+ }
+ if(source==='ifind'){
+  for(let i=0;i<100&&doc?.getElementById('run')?.disabled;i++){
+   if(doc.getElementById('data-notice')&&!doc.getElementById('data-notice').hidden)break;
+   await delay(100);
+  }
+ }
+ const status=doc?.getElementById(source==='fuyao'?'data-notice':'ifind-notice');
+ const checks={};
+ const label=sources[source]+' '+kinds[kind];
+ checks['明确提示']=Boolean(status&&!status.hidden&&status.textContent.includes(source==='fuyao'?'扶摇数据没拿到':'iFinD 公告没拿到'));
+ checks['故障原因']=Boolean(status&&status.textContent.includes({timeout:'超时',error:'失败',empty:'空数据'}[kind]));
+ if(source==='fuyao'){
+  checks['无股票结果']=doc?.querySelectorAll('#result-table tbody tr').length===0;
+  checks['筛选禁用']=doc?.getElementById('run')?.disabled===true;
+  checks['组合禁用']=doc?.getElementById('add-holding')?.disabled===true;
+  checks['结果待取得']=doc?.getElementById('result-description')?.textContent.includes('尚未执行')===true;
+ }else{
+  checks['清楚标注数据依据']=status?.textContent.includes('筛选仅依据扶摇行情和财务数据')===true;
+  checks['扶摇筛选可用']=doc?.querySelectorAll('#result-table tbody tr').length>0&&doc.getElementById('run').disabled===false;
+  doc?.querySelector('#result-table [data-detail]')?.click();
+  const detail=doc?.querySelector('#detail-dialog');
+  checks['详情显示公告未取得']=detail?.open===true&&detail.textContent.includes('iFinD 公告没拿到');
+  checks['无虚构公告']=detail?.querySelectorAll('.notices-list li').length===0;
+ }
+ const passed=Object.values(checks).every(Boolean);
+ const li=document.createElement('li');
+ li.dataset.passed=String(passed);
+ li.textContent=(passed?'通过':'失败')+' · '+label+' · '+Object.entries(checks).map(([name,ok])=>name+(ok?' ✓':' ✗')).join('；');
+ const link=document.createElement('a');link.href=url;link.textContent=' 打开测试页面';li.append(link);
+ document.querySelector('#reports').append(li);
+ frame.remove();
+ return passed;
+}
+const results=[];
+for(const source of Object.keys(sources)){
+ results.push(...await Promise.all(Object.keys(kinds).map(kind=>check(source,kind))));
+}
+document.querySelector('#overall').textContent=results.every(Boolean)?'6 / 6 页面测试通过':'存在失败用例，请检查';
+document.querySelector('#overall').dataset.complete='true';
+</script></html>
