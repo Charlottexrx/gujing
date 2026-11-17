@@ -1,0 +1,225 @@
+{
+  "checkedAt": "2026-11-17T21:48:05.231Z",
+  "model": "gpt-6-luna",
+  "beforeFix": [
+    {
+      "text": "近20个交易日涨幅不超过30%，日波动低于2%，市盈率不超过25倍。",
+      "elapsedMs": 8641,
+      "result": {
+        "rules": [
+          {
+            "field": "gain",
+            "op": "lte",
+            "value": 30,
+            "days": 20,
+            "inferred": false,
+            "phrase": ""
+          },
+          {
+            "field": "vol",
+            "op": "lt",
+            "value": 2,
+            "days": 20,
+            "inferred": false,
+            "phrase": ""
+          },
+          {
+            "field": "pe",
+            "op": "lte",
+            "value": 25,
+            "days": null,
+            "inferred": false,
+            "phrase": ""
+          }
+        ],
+        "status": "ready",
+        "needsClarification": false,
+        "questions": [],
+        "inferred": false,
+        "engine": "openai",
+        "modelUsed": "gpt-6-luna",
+        "responseId": "resp_054303c84df5d2e8016afccb68041487d1ae49b3a489154415",
+        "usage": {
+          "input_tokens": 474,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 84,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 558
+        }
+      },
+      "conditionError": ""
+    },
+    {
+      "text": "最近涨得不错，但别太晃",
+      "elapsedMs": 1542,
+      "result": {
+        "rules": [],
+        "status": "clarify",
+        "needsClarification": true,
+        "questions": [
+          "你想看多少个开市日？例如20日或60日。",
+          "这段时间最多或至少涨多少，才符合你的想法？",
+          "每天涨跌的起伏上限是多少？可以先试1%或2%，再修改。"
+        ],
+        "inferred": false,
+        "engine": "openai",
+        "modelUsed": "gpt-6-luna",
+        "responseId": "resp_06c43a23b1976bd7016afccb6a09c087d1892b4fcd640ded2f",
+        "usage": {
+          "input_tokens": 457,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 27,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 484
+        }
+      },
+      "conditionError": null
+    },
+    {
+      "text": "近20个交易日涨幅超过40%，同时近20个交易日涨幅不超过10%。",
+      "elapsedMs": 2082,
+      "error": "股价这段时间涨跌多少的条件互相冲突，请修改上限或下限。"
+    }
+  ],
+  "cases": [
+    {
+      "text": "近20个交易日涨幅不超过30%，日波动低于2%，市盈率不超过25倍。",
+      "result": {
+        "rules": [
+          {
+            "field": "gain",
+            "op": "lte",
+            "value": 30,
+            "days": 20,
+            "inferred": false,
+            "phrase": ""
+          },
+          {
+            "field": "vol",
+            "op": "lt",
+            "value": 2,
+            "days": 20,
+            "inferred": false,
+            "phrase": ""
+          },
+          {
+            "field": "pe",
+            "op": "lte",
+            "value": 25,
+            "days": null,
+            "inferred": false,
+            "phrase": ""
+          }
+        ],
+        "status": "ready",
+        "needsClarification": false,
+        "questions": [],
+        "inferred": false,
+        "engine": "openai",
+        "modelUsed": "gpt-6-luna",
+        "responseId": "resp_03ca81614117c8cf016afccb9187c887d1a23bdc8955d554d7",
+        "usage": {
+          "input_tokens": 474,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 84,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 558
+        }
+      },
+      "elapsedMs": 5898
+    },
+    {
+      "text": "最近涨得不错，但别太晃",
+      "result": {
+        "rules": [],
+        "status": "clarify",
+        "needsClarification": true,
+        "questions": [
+          "你想看多少个开市日？例如20日或60日。",
+          "这段时间最多或至少涨多少，才符合你的想法？",
+          "每天涨跌的起伏上限是多少？可以先试1%或2%，再修改。"
+        ],
+        "inferred": false,
+        "engine": "openai",
+        "modelUsed": "gpt-6-luna",
+        "responseId": "resp_00d466544caac874016afccb933fd087d1a36831a90de46565",
+        "usage": {
+          "input_tokens": 457,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 27,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 484
+        }
+      },
+      "elapsedMs": 927
+    },
+    {
+      "text": "近20个交易日涨幅超过40%，同时近20个交易日涨幅不超过10%。",
+      "result": {
+        "status": "blocked",
+        "rules": [],
+        "needsClarification": true,
+        "questions": [
+          "股价这段时间涨跌多少的条件互相冲突，请修改上限或下限。"
+        ],
+        "code": "MODEL_CONDITIONS_REJECTED",
+        "engine": "openai",
+        "modelUsed": "gpt-6-luna",
+        "responseId": "resp_0a117fde4edd9cb0016afccb94282487d1800b8d1fd5b69f0b",
+        "usage": {
+          "input_tokens": 470,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cache_write_tokens_details": {
+              "ttl_12h_tokens": 0,
+              "ttl_30m_tokens": 0
+            },
+            "cached_tokens": 0
+          },
+          "output_tokens": 63,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 533
+        }
+      },
+      "elapsedMs": 1150
+    }
+  ]
+}

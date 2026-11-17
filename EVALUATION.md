@@ -279,6 +279,6 @@ ChatGPT / Codex 参与了产品交互讨论、扶摇和 iFinD 接口调试、实
 
 gpt-5.4-mini服务端接入已实现，生产环境尚无OPENAI_API_KEY；三句中文真实调用均未执行，AI_VALIDATION.md保留待验证状态。GitHub/OpenAI Developers插件已安装，但本轮没有可用账号授权/密钥配置工具。公开后台自动调度也尚未绑定新增的独立密钥，不能宣称已自动运行。演示视频未录制。
 
-## GitHub源码交付补记（2026-11-17）
+## gpt-6-luna真实模型验收（2026-11-17）
 
-公开仓库为 https://github.com/Charlottexrx/gujing 。使用已连接GitHub账号同步经筛查的源码快照、README、AI使用记录和测试说明；公开副本不含密钥、访客监控记录、受限金融原始缓存或原站点项目ID。此前记录中的“GitHub未完成”描述的是当时状态；以本节与DELIVERY.md为本次源码交付状态。此次同步不改变模型接通、实时公告取数失败或后台自动调度尚未完成的事实。
+生产Secret新增OPENAI_API_KEY，模型切换为用户指定gpt-6-luna。明确句生成三条件；模糊句追问时间/涨幅/波动；冲突句被确定性引擎拦截。修正异常形式为可读blocked返回并保留响应ID，重新真实调用三句。详见AI_VALIDATION.md与AI_LIVE_RESULTS.json。新增回归后115/115自动测试通过。测试数据不包含API密钥；不将三例通过解读为全面准确率。

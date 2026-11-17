@@ -1,6 +1,6 @@
 import fs from 'node:fs';import path from 'node:path';import {execFileSync} from 'node:child_process';
 const root=process.cwd(),out=path.join(root,'.site-public');fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out);
-const allowed=['README.md','EVALUATION.md','MONITORING.md','DELIVERY.md','AI_VALIDATION.md','BROWSER_ACCEPTANCE.md','.env.example','.gitignore','package.json','package-lock.json','wrangler.jsonc','drizzle.config.ts','db','drizzle','worker','scripts','tests','dist'];
+const allowed=['README.md','EVALUATION.md','MONITORING.md','DELIVERY.md','AI_VALIDATION.md','AI_LIVE_RESULTS.json','BROWSER_ACCEPTANCE.md','.env.example','.gitignore','package.json','package-lock.json','wrangler.jsonc','drizzle.config.ts','db','drizzle','worker','scripts','tests','dist'];
 const excluded=new Set(['market-data.json','ifind-notices.json','SECURITY_SCAN.json']);const files=[];
 function walk(relative){const full=path.join(root,relative);if(!fs.existsSync(full))return;if(fs.statSync(full).isDirectory()){if(['dist/server','dist/.openai'].includes(relative)||path.basename(relative)==='__pycache__')return;for(const name of fs.readdirSync(full))walk(relative+'/'+name);return;}if(excluded.has(path.basename(relative))||/\.py[co]$/.test(relative))return;if(relative.startsWith('dist/')&&!/\.(html|css|mjs)$/.test(relative))return;files.push(relative);const dest=path.join(out,relative);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.copyFileSync(full,dest);}
 for(const p of allowed)walk(p);

@@ -402,7 +402,7 @@ $('generate').addEventListener('click',async()=>{
  }catch(e){unresolvedIntent=true;executed=[];results=[];rules=[];renderRules();renderResults();notice('rule-error',e.message);$('ai-status').textContent='AI条件未采用；可以手动切换规则解析。';}
  finally{$('generate').disabled=false;}
 });
-fetch('/api/ai/status').then(r=>r.json()).then(v=>{$('ai-status').textContent=v.configured?'已连接 gpt-5.4-mini；可切换AI理解。':'gpt-5.4-mini 尚未配置密钥，当前使用免费规则解析。';if(v.configured)$('parse-engine').value='ai';}).catch(()=>{$('ai-status').textContent='AI连接状态未取得，当前使用免费规则解析。';});
+fetch('/api/ai/status').then(r=>r.json()).then(v=>{$('ai-status').textContent=v.configured?'已连接 gpt-6-luna；可切换AI理解。':'gpt-6-luna 尚未配置密钥，当前使用免费规则解析。';if(v.configured)$('parse-engine').value='ai';}).catch(()=>{$('ai-status').textContent='AI连接状态未取得，当前使用免费规则解析。';});
 $('add-rule').addEventListener('click',()=>{if(enforceBoundary())return;rules.push(makeRule('gain'));renderRules();notice('rule-error','')});
 $('run').addEventListener('click',()=>{runScreen();if ($('rule-error').hidden) $('results').scrollIntoView({behavior:'smooth'})});
 $('save-rules').addEventListener('click',saveRules);

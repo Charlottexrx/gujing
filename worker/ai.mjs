@@ -1,6 +1,6 @@
 import {assessIntentBoundary,validateRules,fields} from '../dist/logic.mjs';
 import {validateResearchProposal} from '../dist/research.mjs';
-export const MODEL='gpt-5.4-mini';
+export const MODEL='gpt-6-luna';
 const properties={field:{type:'string',enum:['gain','vol','profit','pe','industry']},op:{type:'string',enum:['gt','gte','lt','lte','eq']},value:{anyOf:[{type:'number'},{type:'string'}]},days:{anyOf:[{type:'integer',minimum:2,maximum:250},{type:'null'}]},inferred:{type:'boolean'}};
 export const schema={type:'object',properties:{status:{type:'string',enum:['ready','clarify','blocked']},rules:{type:'array',maxItems:12,items:{type:'object',properties,required:Object.keys(properties),additionalProperties:false}},missing:{type:'array',maxItems:6,items:{type:'string',enum:['window','gain','vol','pe','profit','industry','unsupported']}}},required:['status','rules','missing'],additionalProperties:false};
 const questions={window:'你想看多少个开市日？例如20日或60日。',gain:'这段时间最多或至少涨多少，才符合你的想法？',vol:'每天涨跌的起伏上限是多少？可以先试1%或2%，再修改。',pe:'你希望股价最多是每股盈利的多少倍？',profit:'利润改善是指累计利润比去年同期更多吗？',industry:'你想看哪一类公司？',unsupported:'这项要求目前没有可核验的指标，请换成页面支持的条件。'};
@@ -22,5 +22,5 @@ export async function interpret(env,input,snapshot,fetcher=fetch){
  if(!response.ok)return {error:'大模型调用未成功（HTTP '+response.status+'），未生成正常条件，请重试或切换规则解析。',code:'MODEL_API_FAILED'};
  const raw=await response.json();if(raw.status!=='completed')return {error:'大模型回复未完整返回，条件未采用。',code:'MODEL_INCOMPLETE'};
  const content=raw.output?.flatMap(o=>o.content??[]).find(c=>c.type==='output_text')?.text;if(!content)throw Error('大模型未返回可核验的结构化条件');
- const result=verifyInterpretation(JSON.parse(content),input.text,context,snapshot);return {...result,engine:'openai',modelUsed:raw.model,responseId:raw.id,usage:raw.usage??null};
+ let result;try{result=verifyInterpretation(JSON.parse(content),input.text,context,snapshot);}catch(e){result={status:'blocked',rules:[],needsClarification:true,questions:[e.message],code:'MODEL_CONDITIONS_REJECTED'};}return {...result,engine:'openai',modelUsed:raw.model,responseId:raw.id,usage:raw.usage??null};
 }
